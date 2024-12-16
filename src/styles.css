@@ -1,0 +1,22 @@
+html,
+body{
+  background-color: black;
+}
+#root {
+  height: 100%;
+  margin: unset;
+}
+
+.gutter {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: 0.3s;
+}
+.gutter:hover{
+  background: rgb(3, 140, 252);
+}
+.gutter-horizontal {
+  cursor: ew-resize;
+}
+.wrap {
+  display: flex;
+}
