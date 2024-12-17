@@ -23,7 +23,7 @@ function Edge({ start,end,onRender,...props }){
       ref.current.geometry.setFromPoints([startVec,endVec]);
       ref.current.geometry.setColors([255,255,255]);
     }
-    
+
     useFrame((state,delta)=>{
         onRender(state,delta,setPos);
     });

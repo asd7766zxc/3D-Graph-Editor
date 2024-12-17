@@ -19,9 +19,9 @@ const intersection = new THREE.Vector3();
 //Current vertex's position
 let __pos = [];
 let wheeloffset = 0;
-
+let animationLock = false;
 //Abstract vertex
-function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
+function Vertex({ pos,text,onInit,onRender,DoDrag,Dragging,onPosChange,offDrag,...props }) {
     const font = new FontLoader().parse(myFont);
     const camera = useThree((state) => state.camera);
     const get = useThree((state) => state.get);
@@ -38,10 +38,10 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
         ({ scale: [1, 1, 1], position: pos, rotation: [0, 0, 0], config: { friction: 10 }
         ,onChange: (result,spring,item)=>{
             //Calling adjacent objects to relocate
-            onPosChange(result.value.position,__pos);
+            onPosChange(__pos,result.value.position);
             __pos = result.value.position;
-        },OnDestroyed:()=>{
-            
+        },onRest:()=>{
+            animationLock = true;
         }}))
     const getCameraVertexVec = ()=> {
         position.copy(new Vector3(...__pos));
@@ -52,10 +52,12 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
     };
     const bind = useGesture({
         onDrag: () => {
+        //used to update moving tree
         const cpos = getCameraVertexVec();
         //dragging on a plane perpendicular to camera 
         plane.setFromNormalAndCoplanarPoint(cpos, position);
         get().raycaster.ray.intersectPlane(plane,intersection);
+        Dragging([...intersection]);
         set({ position: [...intersection]})
       },
       onWheel: (e)=>{
@@ -76,6 +78,7 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
     });
 
     const applyPos = (_pos)=>{
+
         set({ position: _pos});
     };
 
@@ -88,9 +91,12 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
 
     useFrame((state, delta) => {
         groupRef.current.lookAt(camera.position);
-        onRender(state,delta,setPos);
+        onRender(state,delta,applyPos);
     })
 
+    useLayoutEffect(()=>{
+        onInit(applyPos);
+    })
 
     return (
         <a.group
