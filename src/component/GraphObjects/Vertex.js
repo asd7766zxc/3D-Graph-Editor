@@ -3,24 +3,24 @@ import { useFrame,extend, useThree } from '@react-three/fiber'
 
 import myFont from './Consolas_Regular.json'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
-import { BackSide, RingGeometry, MeshBasicMaterial, Vector3, CircleGeometry,PlaneHelper } from 'three'
-import { Text, Texture } from '@react-three/drei'
+import {Vector3,PlaneHelper } from 'three'
 import { useGesture } from "react-use-gesture"
 import { useSpring, a } from "@react-spring/three"
 
 import * as THREE from 'three'
-extend({ RingGeometry,MeshBasicMaterial,CircleGeometry,PlaneHelper})
+
+import VertexShape from '../VertexShape'
+extend({ PlaneHelper})
 
 const position = new THREE.Vector3();
 const plane = new THREE.Plane();
 const intersection = new THREE.Vector3();
-const offset = new THREE.Vector3();
-const inverseMatrix = new THREE.Matrix4();
 
 //Current vertex's position
 let __pos = [];
 let wheeloffset = 0;
 
+//Abstract vertex
 function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
     const font = new FontLoader().parse(myFont);
     const camera = useThree((state) => state.camera);
@@ -28,12 +28,8 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
     const { size, viewport } = useThree()
 
     const [hovered, setHover] = useState(false)
-    const [dragging, setDragging] = useState(false)
     const [helperplane, setHelperplane] = useState([])
 
-    const textRef = useRef();
-    const ringRef = useRef();
-    const circleRef = useRef();
     const groupRef = useRef();
     const planeRef = useRef();
 
@@ -42,7 +38,7 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
         ({ scale: [1, 1, 1], position: pos, rotation: [0, 0, 0], config: { friction: 10 }
         ,onChange: (result,spring,item)=>{
             //Calling adjacent objects to relocate
-            onPosChange(result.value.position);
+            onPosChange(result.value.position,__pos);
             __pos = result.value.position;
         },OnDestroyed:()=>{
             
@@ -68,9 +64,7 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
         let delta = e.values[1] - wheeloffset;
         if(delta){
             cpos.multiplyScalar((Math.abs(delta)/delta)*20);
-            console.log("1",cpos,position);
             cpos.add(position);
-            console.log("2",cpos,position);
             set({ position: [...cpos]});
         }
         wheeloffset = e.values[1];
@@ -82,21 +76,18 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
     });
 
     const applyPos = (_pos)=>{
-        __pos = _pos;
-        set({ position: __pos});
+        set({ position: _pos});
     };
 
     //Direct set (skip animation)
     const setPos = (_pos)=>{
+        onPosChange(__pos,_pos);
         __pos = _pos;
-        onPosChange(__pos);
         groupRef.current.position.set(...__pos);
     };
 
     useFrame((state, delta) => {
-        ringRef.current.lookAt(camera.position);
-        textRef.current.lookAt(camera.position);
-        circleRef.current.lookAt(camera.position);
+        groupRef.current.lookAt(camera.position);
         onRender(state,delta,setPos);
     })
 
@@ -115,25 +106,7 @@ function Vertex({ pos,text,onRender,DoDrag,onPosChange,offDrag,...props }) {
             }}
         >
             {[...helperplane]}
-            <Text 
-            ref = {textRef}
-            color="white" anchorX="center" anchorY="middle"
-            fontSize={4}>
-                {text}
-            </Text>
-
-            <mesh 
-             ref = {ringRef}
-            >
-                <ringGeometry args={[4.5,5,1000]}/>
-                <meshBasicMaterial args={[ {color:hovered ? 0xffffff : 0xff0000} ]} />
-            </mesh>
-            <mesh
-                ref = {circleRef}
-            >
-                <circleGeometry args={[5,1000]}/>
-                <meshBasicMaterial args={[ {transparent :true,color:hovered ? 0xffffff : 0x000000,opacity : 0} ]} />
-            </mesh>
+            <VertexShape hovered={hovered} text={text}/>
         </a.group>
     )
   }

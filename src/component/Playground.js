@@ -15,32 +15,39 @@ function Playground(props){
     const [drawnEdges,setDrawnEdges] = useState([]);
 
     const controlRef = useRef();
-    const addEdge = (u,v) => {
-      const cnt = edges.length;
-      edges.push([u,v]);
-      if(!adjacentList[u]) adjacentList[u] = new Array();
-      if(!revertAdjacentList[v]) revertAdjacentList[v] = new Array();
-      adjacentList[u].push(v);
-      revertAdjacentList[v].push(u);
-      setDrawnEdges([
-        ...drawnEdges,
-        <Edge start={vertices[u].pos} end={vertices[v].pos}
-        onRender = {(state,delta,setPos)=>{
-            setPos(vertices[edges[cnt][0]].pos,vertices[edges[cnt][1]].pos);
-        }} />
+
+    //#region GraphDataManipulation
+    const addEdgeAbstractGraph = (u,v) => {
+        edges.push([u,v]);
+        if(!adjacentList[u]) adjacentList[u] = new Array();
+        if(!revertAdjacentList[v]) revertAdjacentList[v] = new Array();
+        adjacentList[u].push(v);
+        revertAdjacentList[v].push(u);
+    };
+
+    const addEdges = (_edges) => {
+        setDrawnEdges([
+          ...drawnEdges,
+          _edges.map(([u,v])=>{
+          const cnt = edges.length;
+          addEdgeAbstractGraph(u,v);
+          return (<Edge start={vertices[u].pos} end={vertices[v].pos}
+                onRender = {(state,delta,setPos)=>{
+                const start = vertices[edges[cnt][0]].pos;
+                const end   = vertices[edges[cnt][1]].pos;
+                setPos(start,end);
+          }} />);
+        })
       ]);
     }
-    const addVertex = () => {
-        const cnt = vertices.length;
-        const pos = Array(3).fill().map(x => MathUtils.randFloatSpread(50*cnt) + 10*cnt);
-        vertices.push({
-          text:cnt.toString(),
-          pos:pos,
-        });
-        addEdge(Math.floor(Math.random() * (cnt-1))+1,cnt);
-        setDrawnVetices([
-            ...drawnVetices,
-            <Vertex key={cnt} pos={pos} text={vertices[cnt].text} 
+    const addVertices = (_verts) => {
+      setDrawnVetices([
+        ...drawnVetices,
+        _verts.map((vert)=>{
+            const cnt = vertices.length;
+            vert.id = cnt;
+            vertices.push(vert);
+            return (<Vertex key={vert.id} pos={vert.pos} text={vert.text} 
               onRender={(state,delta,setPos)=>{
                 // vertices[cnt].pos = [x+Math.random()*4,y+Math.random()*4,z+Math.random()*4];
                 // setPos(vertices[cnt].pos);
@@ -50,17 +57,35 @@ function Playground(props){
               }}
               //Carefully handle dragging callback (massive calling)
               onPosChange={(pos)=>{
-                vertices[cnt].pos = pos;
+                vertices[vert.id].pos = pos;
               }}
               offDrag={()=>{
                 controlRef.current.enabled = true;
               }}
-            />
+            />);
+          })
         ])
+        return _verts.map((vert)=>vert.id);
     };
+    //#endregion GraphDataManipulation
 
+    const addVertexTest = ()=>{
+        let tmp = [];
+        const edg = [];
+        for(let i = 0; i < 10;++i){
+          const pos = Array(3).fill().map(x => MathUtils.randFloatSpread(50*(i+1)) - 25*(i+1));
+          tmp.push({pos:pos,text:(i+1).toString()});
+        }
+        tmp = addVertices(tmp);
+        for(let i = 1; i < 10;++i){
+          //Tree
+            let k = Math.floor(Math.random()*i);
+            edg.push([tmp[i],tmp[k]]);
+        }
+        addEdges(edg);
+    };
     return(
-      <div class="border-4 border-dashed rounded-xl h-screen">
+      <div className="border-4 border-dashed rounded-xl h-screen">
          <Canvas>
             <CameraControls ref={controlRef} minPolarAngle={0} maxPolarAngle={Math.PI / 1.6} />
             <ambientLight intensity={Math.PI / 2} />
@@ -71,7 +96,7 @@ function Playground(props){
                 {[...drawnEdges]}
             </group>
           </Canvas>
-        <button class="border-4 border-dashed rounded-xl h-3" onClick={addVertex}>
+        <button className="border-4 border-dashed rounded-xl h-3" onClick={addVertexTest}>
           add
         </button>
       </div>
