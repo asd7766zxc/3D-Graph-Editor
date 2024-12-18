@@ -5,7 +5,7 @@ import { Resizable } from "re-resizable";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark  } from '@fortawesome/free-solid-svg-icons'
 import './font.css'
-import './Window.css'
+import './FloatWindow.css'
 
 function EditorWindow({children}){
     const [{ x, y}, api] = useSpring(
