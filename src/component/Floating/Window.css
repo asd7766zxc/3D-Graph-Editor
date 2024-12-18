@@ -1,0 +1,7 @@
+.crossIcon{
+    transition: transform .2s;
+}
+.crossIcon:hover{
+    transform: scale(1.4) rotate(90deg);
+    cursor: pointer;
+}

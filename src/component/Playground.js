@@ -6,7 +6,6 @@ import { MathUtils } from "three";
 import Edge from "./GraphObjects/Edge";
 import { addVertex,vertices,constraintWithTree,addEdgeAbstractGraph,physics} from './AbstractGraph.js'
 import * as THREE from 'three';
-import Box from "./GraphObjects/Box.js";
 
 let setVertexPos = [];
 let edges = [];
@@ -104,7 +103,7 @@ function Playground(props){
     });
 
     return(
-      <div className="border-4 border-dashed rounded-xl h-screen">
+      <div className="h-screen w-screen absolute">
          <Canvas>
             <CameraControls ref={controlRef} minPolarAngle={0} maxPolarAngle={Math.PI / 1.6} />
             <ambientLight intensity={Math.PI / 2} />
@@ -115,9 +114,9 @@ function Playground(props){
                 {[...drawnEdges]}
             </group>
           </Canvas>
-        <button className="border-4 border-dashed rounded-xl h-3" onClick={addVertexTest}>
+        {/* <button className="border-4 border-dashed rounded-xl h-3" onClick={addVertexTest}>
           add
-        </button>
+        </button> */}
       </div>
     )
 }

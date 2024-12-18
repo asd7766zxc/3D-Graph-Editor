@@ -9,7 +9,7 @@ import { useSpring, a } from "@react-spring/three"
 
 import * as THREE from 'three'
 
-import VertexShape from '../VertexShape'
+import VertexShape from './VertexShape'
 extend({ PlaneHelper})
 
 const position = new THREE.Vector3();
