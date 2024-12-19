@@ -6,7 +6,8 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
 import {Vector3,PlaneHelper } from 'three'
 import { useGesture } from "react-use-gesture"
 import { useSpring, a } from "@react-spring/three"
-
+import React from "react";
+import {CameraControlsImpContext} from '../AbstractGraph'
 import * as THREE from 'three'
 
 import VertexShape from './VertexShape'
@@ -21,7 +22,9 @@ let __pos = [];
 let wheeloffset = 0;
 let animationLock = false;
 //Abstract vertex
-function Vertex({ pos,text,onInit,onRender,DoDrag,Dragging,onPosChange,offDrag,...props }) {
+function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,onPosChange,offDrag,...props }) {
+    const CameraControlApi = React.useContext(CameraControlsImpContext);
+
     const font = new FontLoader().parse(myFont);
     const camera = useThree((state) => state.camera);
     const get = useThree((state) => state.get);
@@ -65,7 +68,7 @@ function Vertex({ pos,text,onInit,onRender,DoDrag,Dragging,onPosChange,offDrag,.
         cpos.multiplyScalar(-1);
         let delta = e.values[1] - wheeloffset;
         if(delta){
-            cpos.multiplyScalar((Math.abs(delta)/delta)*20);
+            cpos.multiplyScalar((Math.abs(delta)/delta) * wheelSpeed * scaling);
             cpos.add(position);
             set({ position: [...cpos]});
         }
@@ -104,15 +107,17 @@ function Vertex({ pos,text,onInit,onRender,DoDrag,Dragging,onPosChange,offDrag,.
             ref = {groupRef}
             onPointerOver={(e) => {
                 DoDrag();
+                CameraControlApi.current.enable(false);
                 setHover(true)
             }}
             onPointerOut={(e) => {
                 offDrag();
+                CameraControlApi.current.enable(true);
                 setHover(false)
             }}
         >
             {[...helperplane]}
-            <VertexShape hovered={hovered} text={text}/>
+            <VertexShape hovered={hovered} text={text} scaling ={scaling}/>
         </a.group>
     )
   }

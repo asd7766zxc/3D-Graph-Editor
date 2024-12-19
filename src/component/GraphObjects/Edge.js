@@ -2,11 +2,10 @@
 import * as THREE from 'three'
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame,extend } from '@react-three/fiber'
-import { useSpring, a } from "@react-spring/three"
 import { Line2, LineGeometry, LineMaterial } from 'three/examples/jsm/Addons.js'
 
 extend({Line2,LineMaterial,LineGeometry})
-function Edge({ start,end,onRender,...props }){
+function Edge({scaling, start,end,onRender,...props }){
 
     const ref = useRef()
     const setPos = (st,ed) => {
@@ -16,7 +15,7 @@ function Edge({ start,end,onRender,...props }){
       direction.copy(endVec);
       direction.sub(startVec);
       direction.normalize();
-      direction.multiplyScalar(10);
+      direction.multiplyScalar(10 * scaling);
       //make endpoint farther to vertex center
       startVec.add(direction);
       endVec.sub(direction);
@@ -36,7 +35,7 @@ function Edge({ start,end,onRender,...props }){
       >
         <lineGeometry />
         <lineMaterial args={[{color: 0xffffff,
-					linewidth: 5, 
+					linewidth: 5 , 
 					vertexColors: false,
 					dashed: false,
 					alphaToCoverage: true} ]} />
