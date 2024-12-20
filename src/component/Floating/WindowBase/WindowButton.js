@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './WindowButton.css'
 import { useEffect, useState } from 'react';
+
 function WindowButton({icon,iconColor,onClick,...props}){
     const [active,setActive] = useState(props.btnState);
     useEffect(()=>{

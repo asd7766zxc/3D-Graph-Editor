@@ -22,6 +22,7 @@ let revertAdjacentList = [new Array()];
 let setVertexPos = [];
 let edges = [];
 const defaultGraphString = "0\n1\n2\n3\n4\n5\n0 2\n0 4\n0 5\n1 4\n1 5\n2 3\n2 4\n4 5";
+
 //for communication between DataWindow and playground
 const VertexState = atom({
     key:'DrawnVertex',
@@ -31,6 +32,17 @@ const VertexState = atom({
 const EdgeState = atom({
     key:'DrawnEdge',
     default:[],
+});
+
+
+const CameraReset = atom({
+    key:'CameraReset',
+    default:true,
+});
+
+const GridHelper = atom({
+    key:'GridHelper',
+    default:true,
 });
 
 
@@ -229,4 +241,7 @@ export {
     defaultGraphString,
     createGraph,
     parseGraph,
-    CameraControlsImpContext};
+    CameraControlsImpContext,
+    CameraReset,
+    GridHelper,
+};

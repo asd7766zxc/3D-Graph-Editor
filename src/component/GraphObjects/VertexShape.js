@@ -1,16 +1,21 @@
 import { useFrame,extend, useThree } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import { CircleGeometry, MeshBasicMaterial, RingGeometry } from 'three';
+import { useEffect, useState } from 'react';
 
 extend({ RingGeometry,MeshBasicMaterial,CircleGeometry});
 //The styling layer of vertex
 function VertexShape({hovered,text,scaling,...prop}){
+    const [displayText,setDisplayText] = useState(text);
+    useEffect(()=>{
+        setDisplayText(text);
+    },[text]);
     return(
         <group>
             <Text 
             color="white" anchorX="center" anchorY="middle"
             fontSize={4 * scaling}>
-                {text}
+                {displayText}
             </Text>
 
             <mesh >

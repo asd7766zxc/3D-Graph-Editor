@@ -9,6 +9,8 @@ import Playground from './component/Playground';
 import { useRecoilState } from 'recoil';
 import { windowState } from './component/Floating/WindowState'
 import Sidebar from './component/Floating/SidebarPart/Sidebar'
+import SelectorWindow from './component/Floating/WindowBase/SelectorWindow';
+
 library.add(faCircleNodes,faCode,faPen,faPaintBrush,faPalette)
 
 let added = false;
@@ -27,6 +29,7 @@ function App() {
             <Playground />
             {[...windowStates]}
             <Sidebar />
+            <SelectorWindow />
         </div>
     );
 }

@@ -52,11 +52,19 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
         onClose={()=>{
             setThisWindowState(false);
         }}
+        onAdd={()=>{
+            
+        }}
         close={!thisWindowState}
         >
-            <div className='glassPanel h-[calc(100%-40px)]  border-[4px]  border-[#00000000] shadow-[#1E1E1E_0px_0px_50px_0px] rounded-md relative z-20 touch-none' >
-                
-                <div className='h-[40px] content-center text-center text-wrap flex overflow-hidden rounded-t-xl'>
+            <div className='glassPanel 
+            h-[calc(100%-40px)]  
+            border-[4px]  
+            border-[#00000000] 
+            shadow-[#1E1E1E_0px_0px_50px_0px] 
+            rounded-md 
+            relative z-20' >
+               <div className='h-[40px] content-center text-center text-wrap flex overflow-hidden rounded-t-xl'>
                     {
                         Object.keys(thisFile).map((key)=>{
                             const x = thisFile[key];
@@ -104,7 +112,7 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
                     },
                     fontSize: 18,
                   }}
-                />
+                /> 
             </div>
         </FloatWindow>
     )

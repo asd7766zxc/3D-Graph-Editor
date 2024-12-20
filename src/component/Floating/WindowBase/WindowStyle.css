@@ -1,0 +1,40 @@
+.windowbtn{
+    background-color: rgba(255, 255, 255, 0);
+    transition: 0.3s;
+}
+.windowbtn:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.crossIcon{
+    transition: transform .2s;
+}
+.crossIcon:hover{
+    transform: scale(1.4) rotate(90deg);
+    cursor: pointer;
+}
+.crossTabIcon{
+    transition: 0.3s;
+}
+.crossTabIcon:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.windowFade{
+    animation: scale-fade-out 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.windowPop{
+    animation: scale-fade-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scale-fade-in{
+    0%   {opacity:0;}
+    100% {opacity:1;}
+}
+
+@keyframes scale-fade-out {
+    0%   {opacity:1;}
+    100% {opacity:0;}
+}
