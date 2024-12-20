@@ -4,10 +4,11 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNodes, faCode, faPaintBrush, faPalette, faPen } from '@fortawesome/free-solid-svg-icons'
 
 import GraphDataWindow from './component/Floating/GraphDataWindow';
+import ScriptWindow from './component/Floating/ScriptWindow';
 import Playground from './component/Playground';
 import { useRecoilState } from 'recoil';
 import { windowState } from './component/Floating/WindowState'
-import Sidebar from './component/Floating/Sidebar'
+import Sidebar from './component/Floating/SidebarPart/Sidebar'
 library.add(faCircleNodes,faCode,faPen,faPaintBrush,faPalette)
 
 let added = false;
@@ -18,6 +19,7 @@ function App() {
         added = true;
         setWindowStates([
             <GraphDataWindow />,
+            <ScriptWindow />,
         ]);    
     });
     return (

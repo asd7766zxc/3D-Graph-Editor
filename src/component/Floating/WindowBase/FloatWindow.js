@@ -5,14 +5,16 @@ import { Resizable } from "re-resizable";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark  } from '@fortawesome/free-solid-svg-icons'
 import { useRecoilState } from 'recoil';
-import { windowState,windowTop } from './WindowState'
+import { windowState,windowTop,sidebarPosState } from '../WindowState'
 
 import './font.css'
-import './FloatWindow.css'
-import { useWindowDimensions } from '../useWindowDimensions';
+import { useWindowDimensions } from '../../useWindowDimensions';
+import { faWindowMinimize } from '@fortawesome/free-solid-svg-icons/faWindowMinimize';
 
-function EditorWindow({icon,iconColor,title,children,onClose,...props}){
+function FloatWindow({iniX,iniY,iniW,iniH,icon,iconColor,title,children,onClose,...props}){
     const { height, width } = useWindowDimensions();
+
+    const [sidebarPos,setSidebarPos] = useRecoilState(sidebarPosState);
     const [windowStates,setWindowStates] = useRecoilState(windowState);
     const [windowTops,setWindowTops] = useRecoilState(windowTop);
     const [top,setTop] = useState(10);
@@ -20,8 +22,8 @@ function EditorWindow({icon,iconColor,title,children,onClose,...props}){
 
     const [{ x, y}, api] = useSpring(
         () => ({
-          x: 40,
-          y: 40,
+          x: iniX,
+          y: iniY,
           config: {friction: 10 },
         })
     );
@@ -34,6 +36,8 @@ function EditorWindow({icon,iconColor,title,children,onClose,...props}){
         api.start({x,y});
     },
     {
+        preventDefault: true,
+        filterTaps: true,
         from:() => [x.get(),y.get()]
     });
     
@@ -44,6 +48,7 @@ function EditorWindow({icon,iconColor,title,children,onClose,...props}){
     };
     const handleClose = () => {
         setClose(true);
+        // sidebarPos;
         if(onClose) onClose();
     }
     useEffect(()=>{
@@ -52,19 +57,19 @@ function EditorWindow({icon,iconColor,title,children,onClose,...props}){
         setToTopMost();
     },[props.close])
     return(
-        <animated.div className='absolute' 
+        <animated.div className='absolute touch-none' 
         onDragStart={(e)=>{ e.preventDefault()}} 
         style={{x,y,zIndex:top,display:close?'none':'block'}}
         onClick={setToTopMost}>
             <Resizable className='flex content-center'
                 defaultSize={{
-                width: 400,
-                height: 400,
+                width: iniW,
+                height: iniH,
                 }} minHeight={ 200 } minWidth={ 300 }>
                     <div className='block w-full h-full relative'>
                         <div className='h-[40px] relative z-10'>
                             <div className='h-full w-full flex justify-between relative pb-[8px]'>
-                                <animated.div className='h-full bg-[#000000] rounded-full w-2/3 flex text-center relative shadow-[#1E1E1E_0px_0px_40px_0px]'
+                                <animated.div className='h-full bg-[#000000] rounded-full w-2/3 flex text-center relative shadow-[#1E1E1E_0px_0px_40px_0px] touch-none'
                                 {...bind()}>
                                     <div className='h-full text-center text-xl ml-2 mr-1 content-center'>
                                         <FontAwesomeIcon icon={icon} style={{color:iconColor}} />
@@ -75,10 +80,10 @@ function EditorWindow({icon,iconColor,title,children,onClose,...props}){
                                         {title}
                                     </div>
                                 </animated.div>
-                                <div className='h-full bg-[#000000] rounded-full w-[32px] text-center text-2xl text-red-500 shadow-[#5E5E5E_0px_0px_50px_0px] '
+                                <div className='h-full bg-[#000000] rounded-full flex text-center text-xl text-white shadow-[#5E5E5E_0px_0px_50px_0px] '
                                  onClick={handleClose}
                                  >
-                                    <FontAwesomeIcon icon={faXmark} className='crossIcon'/>
+                                    <FontAwesomeIcon className='ml-1 mr-1' icon={faWindowMinimize} />
                                 </div>
                             </div>
                         </div>
@@ -88,4 +93,4 @@ function EditorWindow({icon,iconColor,title,children,onClose,...props}){
         </animated.div>
     )
 };
-export default EditorWindow;
+export default FloatWindow;
