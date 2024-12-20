@@ -1,30 +1,61 @@
-import { useState ,useLayoutEffect} from 'react';
+import { useEffect, useState } from 'react';
 import { useSpring, animated, to } from '@react-spring/web'
-import { useGesture } from 'react-use-gesture'
+import { useDrag, useGesture } from '@use-gesture/react'
 import { Resizable } from "re-resizable";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark  } from '@fortawesome/free-solid-svg-icons'
+import { useRecoilState } from 'recoil';
+import { windowState,windowTop } from './WindowState'
+
 import './font.css'
 import './FloatWindow.css'
+import { useWindowDimensions } from '../useWindowDimensions';
 
-function EditorWindow({icon,iconColor,title,children}){
+function EditorWindow({icon,iconColor,title,children,onClose,...props}){
+    const { height, width } = useWindowDimensions();
+    const [windowStates,setWindowStates] = useRecoilState(windowState);
+    const [windowTops,setWindowTops] = useRecoilState(windowTop);
+    const [top,setTop] = useState(10);
     const [close,setClose] = useState(false);
+
     const [{ x, y}, api] = useSpring(
         () => ({
-          x: 400,
-          y: 400,
+          x: 40,
+          y: 40,
           config: {friction: 10 },
         })
     );
-    const bind = useGesture({
-        onDrag: ({ active, offset: [x, y] }) =>{
-            x = Math.max(x,40);
-            y = Math.max(y,40);
-            api({ x, y });
-        }
+    
+   const bind = useDrag(({ active, offset: [x, y],tap }) =>{
+        x = Math.max(x,40);
+        y = Math.max(y,40);
+        x = Math.min(x,width-220);
+        y = Math.min(y,height-40);
+        api.start({x,y});
+    },
+    {
+        from:() => [x.get(),y.get()]
     });
+    
+    const setToTopMost= ()=>{
+        setWindowTops(windowTops+1);
+        //this window to topmost
+        setTop(windowTops);
+    };
+    const handleClose = () => {
+        setClose(true);
+        if(onClose) onClose();
+    }
+    useEffect(()=>{
+        setClose(props.close);
+        //new window must on top
+        setToTopMost();
+    },[props.close])
     return(
-        <animated.div className='absolute z-10' onDragStart={(e)=>{ e.preventDefault()}} style={{x,y,display:close ? 'none':'initial'}}>
+        <animated.div className='absolute' 
+        onDragStart={(e)=>{ e.preventDefault()}} 
+        style={{x,y,zIndex:top,display:close?'none':'block'}}
+        onClick={setToTopMost}>
             <Resizable className='flex content-center'
                 defaultSize={{
                 width: 400,
@@ -45,9 +76,7 @@ function EditorWindow({icon,iconColor,title,children}){
                                     </div>
                                 </animated.div>
                                 <div className='h-full bg-[#000000] rounded-full w-[32px] text-center text-2xl text-red-500 shadow-[#5E5E5E_0px_0px_50px_0px] '
-                                 onClick={()=>{
-                                    setClose(!close)
-                                 }}
+                                 onClick={handleClose}
                                  >
                                     <FontAwesomeIcon icon={faXmark} className='crossIcon'/>
                                 </div>
