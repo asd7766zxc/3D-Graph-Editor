@@ -3,9 +3,15 @@ import FloatWindow from './FloatWindow';
 import { useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import TabButton from './TabButton'
-
-//remind: not to interactive directly to global window state
-function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onContent,fileState,windowState,icon,iconColor,title}){
+import FileManager from './FileManager';
+//remind: not to interact directly to global window state
+function EditorWindow({defaultFileName,
+    defaultHotReload,
+    iniX,iniY,iniW,iniH,
+    onContent,fileState,
+    windowState,filepath,
+    icon,iconColor,title,
+    handleValidation}){
 
     const [thisWindowState,setThisWindowState] = useRecoilState(windowState);
 
@@ -13,6 +19,7 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
     const [currentFile,setCurrentFile] = useState(defaultFileName);
     const [currentUpdating,setCurrentUpdating] = useState(defaultHotReload);
     const file = thisFile[currentFile];
+    const [fileManagerDisplay,setFileManagerDisplay]=useState(false);
 
     const editorRef = useRef(null);
     loader.init().then((monaco) => {
@@ -41,6 +48,7 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
         onContent(value);
     }
     return(
+        <>
         <FloatWindow
         iniY={iniY}
         iniX={iniX}
@@ -53,7 +61,8 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
             setThisWindowState(false);
         }}
         onAdd={()=>{
-            
+            setFileManagerDisplay(!fileManagerDisplay)
+            console.log(fileManagerDisplay);
         }}
         close={!thisWindowState}
         >
@@ -102,10 +111,11 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
                 <Editor className='h-[calc(100%-41px)] w-full' 
                 defaultLanguage={file.language} 
                 defaultValue={file.value}
-                path={file.name}
+                path={(filepath?filepath:"")+file.name}
                 theme='trueBlack'
                 onChange={onEditorValueChange}
                 onMount={onEditorDidMount}
+                onValidate={handleValidation}
                 options={{
                     minimap: {
                       enabled: false,
@@ -115,6 +125,7 @@ function EditorWindow({defaultFileName,defaultHotReload,iniX,iniY,iniW,iniH,onCo
                 /> 
             </div>
         </FloatWindow>
+        </> 
     )
 };
 export default EditorWindow;

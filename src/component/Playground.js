@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { CameraControls } from "@react-three/drei";
 import { useRecoilState } from 'recoil';
-import {VertexState,EdgeState, parseGraph, createGraph, defaultGraphString,CameraControlsImpContext} from './AbstractGraph.js'
+import {VertexState,EdgeState, parseGraph, createGraph, defaultGraphString,CameraControlsImpContext, CameraReset, GridHelpers} from './AbstractGraph.js'
 import React from "react";
 import { useLayoutEffect, useRef,useEffect } from 'react';
 
@@ -9,6 +9,8 @@ let added = false;
 function Playground(props){
     const [drawnVertices,setDrawnVertices] = useRecoilState(VertexState);
     const [drawnEdges,setDrawnEdges] = useRecoilState(EdgeState);
+    const [cameraReset,setCameraReset] = useRecoilState(CameraReset);
+    const [tgdhelper,setTgdhelper] = useRecoilState(GridHelpers);
     const refCameraControlsImpApi = React.useContext(CameraControlsImpContext);
     let controlRef = null;
 
@@ -31,15 +33,15 @@ function Playground(props){
          <Canvas>
             <CameraControls ref={(selfref)=>{
               controlRef = selfref;
-              if(controlRef){
-                controlRef.setLookAt(3,3,3,0,0,0,true);
+              if(controlRef && cameraReset){
+                controlRef.setLookAt(4,4,4,0,0,0,true);
               }
             }} minPolarAngle={0} maxPolarAngle={Math.PI / 1.6}
              />
             <ambientLight intensity={Math.PI / 2} />
             <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
             <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-            <gridHelper />
+            {tgdhelper && <gridHelper />}
             <group>
                 {drawnVertices.map(data => data)}
                 {drawnEdges.map(data => data)}

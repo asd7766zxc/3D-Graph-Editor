@@ -6,7 +6,8 @@ import React from "react";
 //global cameracontrol 
 const CameraControlsImpContext = React.createContext({ current: null });
 
-const physics = true;
+//for test
+let physics = true;
 const scaling = 0.04;
 const wheelSpeed = 20;
 
@@ -14,7 +15,9 @@ const mxedgelength = 100 * scaling;
 const mnedgelength = 50 * scaling;
 
 //useful for traversing
-let vertices = [{text:"",pos:[0,0,0]}];
+let vertices = [{
+    pos:[0,0,0],
+}];
 let adjacentList = [new Array()];
 let revertAdjacentList = [new Array()];
 
@@ -40,11 +43,15 @@ const CameraReset = atom({
     default:true,
 });
 
-const GridHelper = atom({
-    key:'GridHelper',
+const GridHelpers = atom({
+    key:'GridHelpers',
     default:true,
 });
 
+const physicsState = atom({
+    key:'physicsState',
+    default:true,
+});
 
 const addVertexAbstractGraph = (vert) => {
     vertices.push(vert);
@@ -156,7 +163,7 @@ const parseGraph = (str) => {
 //#region CreateGraphInstances
 const createEdgeInstances = ([u,v,id]) => {
     return (<Edge scaling={scaling} start={vertices[u].pos} end={vertices[v].pos}
-      onRender = {(state,delta,setPos)=>{
+        onRender = {(state,delta,setPos)=>{
         if(!edges[id]) return;
         let [u,v,st,ed] = edges[id];
         if(!vertices[u] || !vertices[v]) return;
@@ -167,17 +174,40 @@ const createEdgeInstances = ([u,v,id]) => {
         setPos(nst,ned);
     }} />);
 }
-    
+
+const graphDefaultStyle = {
+    text:"",
+    scaling:0.04,
+    ringColor:0xff0000,
+    bgColor:0x000000,
+    radiusInner:4.5,
+    radiusOuter:5,
+    cirlceStep:1000,
+    ringHover:0xffffff,
+    bgHover:0xffffff,
+    fontSize:4,
+    bgOpacity:0,
+};
+
 const createVertexInstance = (vert)=>{
   return (<Vertex
     wheelSpeed={wheelSpeed} 
     scaling={scaling} 
     pos={vert.pos} 
-    text={vert.text} 
+    vertStyle = { vert.style ? vert.style : graphDefaultStyle }
+    updating={vert.requestAnimation ? true:false}
     onInit={(setPos)=>{
       setVertexPos[vert.id] = setPos;
     }}
-    onRender={(state,delta)=>{
+    onRender={(elapsed,state,delta,setPos,setStyle,styling)=>{
+        if(vert.requestAnimation){
+            try{
+                vert.requestAnimation(elapsed,vert.params,state,delta,setPos,setStyle,styling);
+            }catch(e){
+                console.log(e);
+                vert.requestAnimation = null;
+            }
+        }
     }}
     DoDrag={()=>{
     }}
@@ -186,6 +216,7 @@ const createVertexInstance = (vert)=>{
     }}
     //Carefully handle dragging callback (massive calling)
     onPosChange={(pos,__pos)=>{
+        if(vertices[vert.id])
         vertices[vert.id].pos = __pos;
     }}
     offDrag={()=>{
@@ -195,24 +226,8 @@ const createVertexInstance = (vert)=>{
 
 //#endregion CreateGraphInstances
 
-//CreateAbstractGraphData
-const createGraph = ([_vertices,_edges]) => {
-    let _verts = [{id:0,text:"dummy",pos:[0,0,0]}];
-    for (let [key, value] of _vertices.entries()) {
-        //1-base vertex
-        let obj = {id:value,text:key,pos:[0,0,0]};
-        _verts.push(obj);
-    }
-    let cnt = Math.min(_verts.length,(vertices.length));
-
-    //sorted by id (very important)
-    _verts.sort((a,b) => (a.id - b.id));
-    for(let i = 1; i < cnt; ++i){
-        _verts[i].pos = vertices[i].pos;
-    }
-    for(let i = cnt; i < _verts.length;++i){
-        _verts[i].pos = Array(3).fill().map(x => THREE.MathUtils.randFloatSpread((i+1)));
-    }
+//creat graph components
+const craftGraph = (_verts,_edges)=>{
 
     //clean up for graph creation
     vertices = [{text:"",pos:[0,0,0]}];
@@ -234,7 +249,35 @@ const createGraph = ([_vertices,_edges]) => {
     });
     return [__verts,__edgs];
 }
+//string graph (from graph data window)
+const createGraph = ([_vertices,_edges]) => {
+    let _verts = [{id:0,text:"dummy",pos:[0,0,0]}];
+    for (let [key, value] of _vertices.entries()) {
+        //1-base vertex
+        let obj = {id:value,pos:[0,0,0]};
+        obj.style = {...graphDefaultStyle};
+        obj.style.text = key;
+        _verts.push(obj);
+    }
+    let cnt = Math.min(_verts.length,(vertices.length));
 
+    //sorted by id (very important)
+    _verts.sort((a,b) => (a.id - b.id));
+    for(let i = 1; i < cnt; ++i){
+        _verts[i].pos = vertices[i].pos;
+    }
+    for(let i = cnt; i < _verts.length;++i){
+        _verts[i].pos = Array(3).fill().map(x => THREE.MathUtils.randFloatSpread((i+1)));
+    }
+    return craftGraph(_verts,_edges);
+}
+
+//Create graph with all data provide (from scripting window)
+const instanceGraph = ([_verts,_edges]) => {
+    _verts.push({id:0,text:"",pos:[0,0,0]});
+    _verts.sort((a,b) => (a.id - b.id));
+    return craftGraph(_verts,_edges);
+};
 export {
     VertexState,
     EdgeState,
@@ -243,5 +286,7 @@ export {
     parseGraph,
     CameraControlsImpContext,
     CameraReset,
-    GridHelper,
+    GridHelpers,
+    instanceGraph,
+    physicsState,
 };

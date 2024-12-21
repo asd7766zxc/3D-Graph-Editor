@@ -5,26 +5,38 @@ import { useEffect, useState } from 'react';
 
 extend({ RingGeometry,MeshBasicMaterial,CircleGeometry});
 //The styling layer of vertex
-function VertexShape({hovered,text,scaling,...prop}){
-    const [displayText,setDisplayText] = useState(text);
-    useEffect(()=>{
-        setDisplayText(text);
-    },[text]);
+function VertexShape({hovered,
+    text,
+    scaling,
+    ringColor,
+    radiusInner,
+    radiusOuter,
+    cirlceStep,
+    bgOpacity,
+    bgHover,
+    ringHover,
+    bgColor,
+    fontSize,
+    textPos,
+    ...prop}){
     return(
         <group>
             <Text 
-            color="white" anchorX="center" anchorY="middle"
-            fontSize={4 * scaling}>
-                {displayText}
+            color="white" 
+            anchorX="center" 
+            anchorY="middle"
+            position={textPos}
+            fontSize={fontSize * scaling}>
+                {text}
             </Text>
 
             <mesh >
-                <ringGeometry args={[4.5 * scaling,5 * scaling,1000]}/>
-                <meshBasicMaterial args={[ {color:hovered ? 0xffffff : 0xff0000} ]} />
+                <ringGeometry args={[radiusInner * scaling,radiusOuter * scaling,cirlceStep]}/>
+                <meshBasicMaterial args={[ {color:hovered ? ringHover : ringColor} ]} />
             </mesh>
             <mesh>
-                <circleGeometry args={[5 * scaling,1000]}/>
-                <meshBasicMaterial args={[ {transparent :true,color:hovered ? 0xffffff : 0x000000,opacity : 0} ]} />
+                <circleGeometry args={[radiusInner * scaling,cirlceStep]}/>
+                <meshBasicMaterial args={[ {transparent :true,color:hovered ? bgHover : bgColor,opacity : bgOpacity} ]} />
             </mesh>
 
         </group>

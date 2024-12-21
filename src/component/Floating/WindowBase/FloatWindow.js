@@ -19,7 +19,9 @@ function FloatWindow({iniX,iniY,iniW,iniH,icon,iconColor,title,children,onClose,
     const [windowTops,setWindowTops] = useRecoilState(windowTop);
     const [top,setTop] = useState(10);
     const [close,setClose] = useState(props.close);
+
     const [display,setDisplay] = useState(props.close?"none":"block");
+    
     const [{ x, y}, api] = useSpring(
         () => ({
           x: iniX,
@@ -111,7 +113,10 @@ function FloatWindow({iniX,iniY,iniW,iniH,icon,iconColor,title,children,onClose,
                                     >
                                         <FontAwesomeIcon className='ml-3 mr-3 mt-1.5 crossTabIcon 
                                         text-[#555555] hover:text-[#FFFFFF] border-none' 
-                                        icon={faPlus} onClick={(e)=>e.preventDefault()}
+                                        icon={faPlus} onClick={(e)=>{
+                                            e.preventDefault();
+                                            onAdd();
+                                        }}
                                         onFocus={(e)=>e.preventDefault()}
                                         />
                                     </div>

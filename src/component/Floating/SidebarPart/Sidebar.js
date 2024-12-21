@@ -5,13 +5,21 @@ import { useWindowDimensions } from '../../useWindowDimensions'
 import { windowState,graphDataWindowState,sidebarPosState,scriptWindowState, graphDataWindowStyle, scriptWindowStyle,ButtonToolTip } from '../WindowState'
 import './Sidebar.css'
 import { useRecoilState } from 'recoil';
-import WindowButton from '../WindowBase/WindowButton';
+import WindowButton from './WindowButton';
+import { CameraReset, GridHelpers, physicsState } from '../../AbstractGraph';
+import { faRotateRight, faTableCellsLarge } from '@fortawesome/free-solid-svg-icons';
+import { faConnectdevelop } from '@fortawesome/free-brands-svg-icons';
 
 function Sidebar({props}){
     const { height, width } = useWindowDimensions();
     const [sidebarPos,setSidebarPos] = useRecoilState(sidebarPosState);
     const [graphDataWindowStates,setGraphDataWindowStates] = useRecoilState(graphDataWindowState);
     const [scriptWindow,setScriptWindow] = useRecoilState(scriptWindowState);
+
+    const [cameraReset,setCameraReset] = useRecoilState(CameraReset);
+    const [tgdhelper,setTgdhelper] = useRecoilState(GridHelpers);
+
+    const [phys,setPhys] = useRecoilState(physicsState);
     const dragRef = useRef(null);
     const [{ x, y}, api] = useSpring(
         () => ({
@@ -40,7 +48,7 @@ function Sidebar({props}){
     //{...bind()}
     return (
         <a.div style={{x,y}} {...bind()}
-               className='w-[200px] h-[50px] absolute z-[999] touch-none'>
+               className='h-[50px] absolute z-[999] touch-none'>
             <div className='glassPanel w-full h-full pt-[7px] pl-[8px] flex'>
                 <div
                     {...ButtonToolTip}
@@ -70,6 +78,44 @@ function Sidebar({props}){
 
                 <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
                 <div className='h-[85] w-[2px] bg-[#2e2e2e] ml-1 mr-1 mb-1.5'/>
+                <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
+                <div
+                    {...ButtonToolTip}
+                    data-tooltip-content="Toggle Camera Reset"
+                >
+                    <WindowButton onClick={()=>{
+                            setCameraReset(!cameraReset);
+                        }} btnState={cameraReset} 
+                    icon={faRotateRight}
+                    iconColor={"#00897B"}
+                        />
+                </div>
+                <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
+                <div
+                    {...ButtonToolTip}
+                    data-tooltip-content="Toggle Grid"
+                >
+                    <WindowButton onClick={()=>{
+                            setTgdhelper(!tgdhelper);
+                        }} btnState={tgdhelper} 
+                    icon={faTableCellsLarge}
+                    iconColor={"#00897B"}
+                        />
+                </div>
+                <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
+
+                <div
+                    {...ButtonToolTip}
+                    data-tooltip-content="Toggle Graph Connected Motion"
+                >
+                    <WindowButton onClick={()=>{
+                            setPhys(!phys);
+                        }} btnState={phys} 
+                    icon={faConnectdevelop}
+                    iconColor={"#00897B"}
+                        />
+                </div>
+                <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
 
             </div>
         </a.div>

@@ -1,4 +1,4 @@
-import { useLayoutEffect,useRef, useState } from 'react'
+import { useEffect, useLayoutEffect,useRef, useState } from 'react'
 import { useFrame,extend, useThree } from '@react-three/fiber'
 
 import myFont from './Consolas_Regular.json'
@@ -7,22 +7,34 @@ import {Vector3,PlaneHelper } from 'three'
 import { useGesture } from "react-use-gesture"
 import { useSpring, a } from "@react-spring/three"
 import React from "react";
-import {CameraControlsImpContext} from '../AbstractGraph'
+import {CameraControlsImpContext, physicsState} from '../AbstractGraph'
 import * as THREE from 'three'
 
 import VertexShape from './VertexShape'
+import { useRecoilState } from 'recoil'
 extend({ PlaneHelper})
 
 const position = new THREE.Vector3();
 const plane = new THREE.Plane();
 const intersection = new THREE.Vector3();
+let elapsed = 0;
 
 //Current vertex's position
 let __pos = [];
 let wheeloffset = 0;
 let animationLock = false;
 //Abstract vertex
-function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,onPosChange,offDrag,...props }) {
+function Vertex({
+    wheelSpeed,
+    scaling,
+    pos,text,
+    onInit,onRender,
+    DoDrag,Dragging,
+    onPosChange,offDrag
+    ,color,radius,
+    vertStyle,
+    updating,
+    ...props }) {
     const CameraControlApi = React.useContext(CameraControlsImpContext);
 
     const font = new FontLoader().parse(myFont);
@@ -30,8 +42,13 @@ function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,on
     const get = useThree((state) => state.get);
     const { size, viewport } = useThree()
 
+    const [physics,setPhysics] = useRecoilState(physicsState);
+    
     const [hovered, setHover] = useState(false)
+    const [textPos, setTextPos] = useState([0,0,0])
     const [helperplane, setHelperplane] = useState([])
+
+    const [styling, setStyling] = useState(vertStyle);
 
     const groupRef = useRef();
     const planeRef = useRef();
@@ -46,6 +63,7 @@ function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,on
         },onRest:()=>{
             animationLock = true;
         }}))
+
     const getCameraVertexVec = ()=> {
         position.copy(new Vector3(...__pos));
         const cpos = new Vector3(0,0,0);
@@ -53,14 +71,19 @@ function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,on
         cpos.normalize();
         return cpos;
     };
+
     const bind = useGesture({
         onDrag: () => {
+
         //used to update moving tree
         const cpos = getCameraVertexVec();
+
         //dragging on a plane perpendicular to camera 
         plane.setFromNormalAndCoplanarPoint(cpos, position);
         get().raycaster.ray.intersectPlane(plane,intersection);
-        Dragging([...intersection]);
+
+        //physics state
+        if(physics) Dragging([...intersection]);
         set({ position: [...intersection]})
       },
       onWheel: (e)=>{
@@ -81,7 +104,6 @@ function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,on
     });
 
     const applyPos = (_pos)=>{
-
         set({ position: _pos});
     };
 
@@ -91,13 +113,30 @@ function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,on
         __pos = _pos;
         groupRef.current.position.set(...__pos);
     };
-
+    const setStyle = (_style) => {
+        setStyling(_style);
+    }
     useFrame((state, delta) => {
+        elapsed++;
+        //Offset Text
+        let vecCam = new Vector3(0,0,0);
+        vecCam.copy(camera.position);
+        let vecCur = groupRef.current.position;
+        vecCam.sub(vecCur);
+        vecCam.normalize();
+        vecCam.multiplyScalar(-0.01);
+        //kinda buggy
+        // setTextPos([...vecCam]);
+        
         groupRef.current.lookAt(camera.position);
-        onRender(state,delta,applyPos);
+        onRender(elapsed,state,delta,setPos,setStyle,styling);
     })
-
     useLayoutEffect(()=>{
+        if(updating) return;
+        //Hard resetting
+        elapsed = 0;
+        setStyling(vertStyle);
+        setPos(pos);
         onInit(applyPos);
     })
 
@@ -117,7 +156,12 @@ function Vertex({wheelSpeed, scaling,pos,text,onInit,onRender,DoDrag,Dragging,on
             }}
         >
             {[...helperplane]}
-            <VertexShape hovered={hovered} text={text} scaling ={scaling}/>
+            <VertexShape 
+
+                hovered={hovered} 
+                textPos={textPos}
+                {...styling}
+             />
         </a.group>
     )
   }

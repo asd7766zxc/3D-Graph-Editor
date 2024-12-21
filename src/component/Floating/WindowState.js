@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-
+import { exampleScriptString } from '../../defaultData/default';
 const windowState = atom({
     key:'windowState',
     default:[],
@@ -47,6 +47,7 @@ const sidebarPosState = atom({
     default:[0,0],
 });
 
+const graphPath = "graph/";
 const graphFiles = atom({
     key:'graphFiles',
     default:{
@@ -67,14 +68,14 @@ const graphFiles = atom({
         },
     }
 });
-
+const scriptPath = "script/";
 const scriptFiles = atom({
     key:'scriptFiles',
     default:{
-        'default': {
-            name: 'default',
+        'example.js': {
+            name: 'example.js',
             language: 'javascript',
-            value: '0\n1\n2\n3\n4\n5\n0 2\n0 4\n0 5\n1 4\n1 5\n2 3\n2 4\n4 5',
+            value: exampleScriptString,
         },
         'style.js': {
             name: 'style.js',
@@ -105,4 +106,6 @@ export {
     graphDataWindowStyle,
     scriptWindowStyle,
     ButtonToolTip,
+    graphPath,
+    scriptPath,
 };
