@@ -2,7 +2,7 @@ import { useState ,useLayoutEffect, useRef, useEffect} from 'react';
 import { useDrag } from '@use-gesture/react'
 import { useSpring, a, to } from '@react-spring/web'
 import { useWindowDimensions } from '../../useWindowDimensions'
-import { windowState,graphDataWindowState,sidebarPosState,scriptWindowState, graphDataWindowStyle, scriptWindowStyle } from '../WindowState'
+import { windowState,graphDataWindowState,sidebarPosState,scriptWindowState, graphDataWindowStyle, scriptWindowStyle,ButtonToolTip } from '../WindowState'
 import './Sidebar.css'
 import { useRecoilState } from 'recoil';
 import WindowButton from '../WindowBase/WindowButton';
@@ -42,18 +42,32 @@ function Sidebar({props}){
         <a.div style={{x,y}} {...bind()}
                className='w-[200px] h-[50px] absolute z-[999] touch-none'>
             <div className='glassPanel w-full h-full pt-[7px] pl-[8px] flex'>
-
+                <div
+                    {...ButtonToolTip}
+                    data-tooltip-content="Graph Data"
+                >
                 <WindowButton onClick={()=>{
                     setGraphDataWindowStates(!graphDataWindowStates);
                 }} btnState={graphDataWindowStates} 
-                {...graphDataWindowStyle}  />
+                {...graphDataWindowStyle}  
+                
+                />
+                </div>
 
                 <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
 
-                <WindowButton onClick={()=>{
-                    setScriptWindow(!scriptWindow);
-                }} btnState={scriptWindow} 
-                {...scriptWindowStyle}  />
+                <div
+                    {...ButtonToolTip}
+                    data-tooltip-content="Scripts"
+                >
+                    <WindowButton onClick={()=>{
+                        setScriptWindow(!scriptWindow);
+                    }} btnState={scriptWindow} 
+                    {...scriptWindowStyle}  
+                    />
+
+                </div>
+
                 <div className='h-[85%] w-[2px] bg-transparent ml-1 mr-1'/>
                 <div className='h-[85] w-[2px] bg-[#2e2e2e] ml-1 mr-1 mb-1.5'/>
 

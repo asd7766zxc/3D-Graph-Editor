@@ -3,14 +3,14 @@ import { useSpring, animated, to } from '@react-spring/web'
 import { useDrag, useGesture } from '@use-gesture/react'
 import { Resizable } from "re-resizable";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownLeftAndUpRightToCenter, faPlus, faXmark  } from '@fortawesome/free-solid-svg-icons'
+import { faDownLeftAndUpRightToCenter, faPlus  } from '@fortawesome/free-solid-svg-icons'
 import { useRecoilState } from 'recoil';
-import { windowState,windowTop } from '../WindowState'
+import { windowState,windowTop,ButtonToolTip } from '../WindowState'
 
 import './font.css'
 import { useWindowDimensions } from '../../useWindowDimensions';
-import { faWindowMinimize } from '@fortawesome/free-solid-svg-icons/faWindowMinimize';
 import './WindowStyle.css'
+import { Tooltip } from 'react-tooltip';
 
 function FloatWindow({iniX,iniY,iniW,iniH,icon,iconColor,title,children,onClose,onAdd,...props}){
     const { height, width } = useWindowDimensions();
@@ -85,7 +85,7 @@ function FloatWindow({iniX,iniY,iniW,iniH,icon,iconColor,title,children,onClose,
                 defaultSize={{
                 width: iniW,
                 height: iniH,
-                }} minHeight={ 200 } minWidth={ 300 }>
+            }} minHeight={ 200 } minWidth={ 300 }>
                     <animated.div className='block w-full h-full relative'
                         style={{opacity}}
                     >
@@ -105,16 +105,27 @@ function FloatWindow({iniX,iniY,iniW,iniH,icon,iconColor,title,children,onClose,
                                 bg-[#000000] rounded-full 
                                 flex text-center text-xl shadow-[#5E5E5E_0px_0px_50px_0px]'
                                 >
-                                    <FontAwesomeIcon className='ml-3 mr-3 mt-1.5 crossTabIcon 
-                                    text-[#555555] hover:text-[#FFFFFF]' 
-                                    icon={faPlus} onClick={onAdd}
-                                    />
-                                    <div className='h-[85%] w-[2px] bg-[#1e1e1e] content-center mt-0.5 ' />
+                                    <div
+                                        {...ButtonToolTip}
+                                        data-tooltip-content="File Manager"
+                                    >
+                                        <FontAwesomeIcon className='ml-3 mr-3 mt-1.5 crossTabIcon 
+                                        text-[#555555] hover:text-[#FFFFFF] border-none' 
+                                        icon={faPlus} onClick={(e)=>e.preventDefault()}
+                                        onFocus={(e)=>e.preventDefault()}
+                                        />
+                                    </div>
 
-                                    <FontAwesomeIcon className='ml-3 mr-3 mt-1.5 crossTabIcon 
-                                    text-[#555555] hover:text-[#FFFFFF]' 
-                                    icon={faDownLeftAndUpRightToCenter} 
-                                    onClick={handleClose}/>
+                                    <div className='h-[85%] w-[2px] bg-[#1e1e1e] content-center mt-0.5 ' />
+                                    <div
+                                        {...ButtonToolTip}
+                                        data-tooltip-content="Minimize"
+                                    >
+                                        <FontAwesomeIcon className='ml-3 mr-3 mt-1.5 crossTabIcon 
+                                        text-[#555555] hover:text-[#FFFFFF]' 
+                                        icon={faDownLeftAndUpRightToCenter} 
+                                        onClick={handleClose}/>
+                                    </div>
                                 </div>
                             </div>
                         </div>

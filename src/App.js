@@ -10,6 +10,7 @@ import { useRecoilState } from 'recoil';
 import { windowState } from './component/Floating/WindowState'
 import Sidebar from './component/Floating/SidebarPart/Sidebar'
 import SelectorWindow from './component/Floating/WindowBase/SelectorWindow';
+import { Tooltip } from 'react-tooltip';
 
 library.add(faCircleNodes,faCode,faPen,faPaintBrush,faPalette)
 
@@ -30,6 +31,7 @@ function App() {
             {[...windowStates]}
             <Sidebar />
             <SelectorWindow />
+            <Tooltip id='tooltip-common' className='relative z-50' />
         </div>
     );
 }

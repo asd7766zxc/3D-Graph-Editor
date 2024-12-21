@@ -1,6 +1,7 @@
 import { faRotate, faXmark,faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { ButtonToolTip } from "../WindowState";
 
 function TabButton({focused,OnClick,OnPlay,OnHot,filename,hotupdate,OnClose}){
     const [focus,setFocus] = useState(focused);
@@ -22,9 +23,13 @@ function TabButton({focused,OnClick,OnPlay,OnHot,filename,hotupdate,OnClose}){
             }}>
                 <div className="mt-[5px] ml-3 text-lg crossTabIcon"
                     onClick={OnPlay}
-                    onDoubleClick={OnHot}>
+                    onDoubleClick={OnHot}
+                    {...ButtonToolTip}
+                    data-tooltip-content={updating ? "Hot Reloading":"Play"}
+                    >
                     <FontAwesomeIcon icon={updating? faRotate:faPlay} style={{color:updating?"#FFEB3B":"#7a97ff"}}
-                    className={updating ? "animate-spin":""} />
+                    className={updating ? "animate-spin":""} 
+                    />
                 </div>
             <div className="
             ml-2
@@ -37,6 +42,8 @@ function TabButton({focused,OnClick,OnPlay,OnHot,filename,hotupdate,OnClose}){
                 {filename}
             </div>
             <div className='text-2xl text-[#e4e4dd] mr-[10px] mt-[3px] select-none'
+            {...ButtonToolTip}
+            data-tooltip-content={"Close"}
             >
                 <FontAwesomeIcon className='crossTabIcon' icon={faXmark} onClick={OnClose} />
             </div>

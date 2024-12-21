@@ -89,6 +89,11 @@ const scriptFiles = atom({
     }
 });
 
+const ButtonToolTip = {
+    'data-tooltip-id':"tooltip-common",
+    'data-tooltip-delay-show':500,
+};
+
 export {
     windowState,
     windowTop,
@@ -99,4 +104,5 @@ export {
     scriptFiles,
     graphDataWindowStyle,
     scriptWindowStyle,
+    ButtonToolTip,
 };
