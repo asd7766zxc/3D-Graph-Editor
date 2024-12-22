@@ -200,6 +200,8 @@ function InfoTab(){
                             <SaveButton saved={false} /> in the top right corner indicates the file state. (auto save works every five second).
                             <br />
                             <SaveButton saved={true} /> means current state saved, <SaveButton /> otherwise.
+                            <br />
+                            Note : if you need default data/script back you can manually delete the localStorage with key "tdViewState".
                         </div>
                         <br />
                         <div className="text-xl ml-4 font-['DM Sans'] font-bold">
