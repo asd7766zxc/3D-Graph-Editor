@@ -1,6 +1,4 @@
 # 3D-Graph-Editor
-###### Site link - <https://tdgrapheditor.web.app/>
+#### Site link - <https://tdgrapheditor.web.app/>
 ---
-#### Features
-Relative Planar Movement
-![alt text](image.png)
+#### More info on the bottom right corner of the site.
