@@ -34,6 +34,7 @@ function Vertex({
     ,color,radius,
     vertStyle,
     updating,
+    GraphID,
     ...props }) {
     const CameraControlApi = React.useContext(CameraControlsImpContext);
 
@@ -47,6 +48,7 @@ function Vertex({
     const [hovered, setHover] = useState(false)
     const [textPos, setTextPos] = useState([0,0,0])
     const [helperplane, setHelperplane] = useState([])
+    const [thisID,setThisID] = useState(GraphID);
 
     const [styling, setStyling] = useState(vertStyle);
 
@@ -132,12 +134,13 @@ function Vertex({
         onRender(elapsed,state,delta,setPos,setStyle,styling);
     })
     useLayoutEffect(()=>{
-        if(updating) return;
+        onInit(applyPos);
+        if(thisID === GraphID) return;
+        setThisID(GraphID);
         //Hard resetting
         elapsed = 0;
         setStyling(vertStyle);
         setPos(pos);
-        onInit(applyPos);
     })
 
     return (

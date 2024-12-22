@@ -3,6 +3,8 @@ import { atom } from 'recoil';
 import Vertex from "./GraphObjects/Vertex";
 import Edge from "./GraphObjects/Edge";
 import React from "react";
+import { v6 as uuidv6 } from 'uuid';
+
 //global cameracontrol 
 const CameraControlsImpContext = React.createContext({ current: null });
 
@@ -25,6 +27,9 @@ let revertAdjacentList = [new Array()];
 let setVertexPos = [];
 let edges = [];
 const defaultGraphString = "0\n1\n2\n3\n4\n5\n0 2\n0 4\n0 5\n1 4\n1 5\n2 3\n2 4\n4 5";
+
+//for specify graph ViewState
+let curretGraphID = uuidv6;
 
 //for communication between DataWindow and playground
 const VertexState = atom({
@@ -162,16 +167,21 @@ const parseGraph = (str) => {
 
 //#region CreateGraphInstances
 const createEdgeInstances = ([u,v,id]) => {
-    return (<Edge scaling={scaling} start={vertices[u].pos} end={vertices[v].pos}
+    return (<Edge 
+        scaling={scaling} 
+        start={vertices[u].pos} 
+        end={vertices[v].pos}
+        GraphID={curretGraphID}
+
         onRender = {(state,delta,setPos)=>{
-        if(!edges[id]) return;
-        let [u,v,st,ed] = edges[id];
-        if(!vertices[u] || !vertices[v]) return;
-        const nst = vertices[u].pos;
-        const ned = vertices[v].pos;
-        edges[id][2] = nst;
-        edges[id][3] = ned;
-        setPos(nst,ned);
+            if(!edges[id]) return;
+            let [u,v,st,ed] = edges[id];
+            if(!vertices[u] || !vertices[v]) return;
+            const nst = vertices[u].pos;
+            const ned = vertices[v].pos;
+            edges[id][2] = nst;
+            edges[id][3] = ned;
+            setPos(nst,ned);
     }} />);
 }
 
@@ -196,6 +206,7 @@ const createVertexInstance = (vert)=>{
     pos={vert.pos} 
     vertStyle = { vert.style ? vert.style : graphDefaultStyle }
     updating={vert.requestAnimation ? true:false}
+    GraphID={curretGraphID}
     onInit={(setPos)=>{
       setVertexPos[vert.id] = setPos;
     }}
@@ -228,7 +239,7 @@ const createVertexInstance = (vert)=>{
 
 //creat graph components
 const craftGraph = (_verts,_edges)=>{
-
+    curretGraphID = uuidv6();
     //clean up for graph creation
     vertices = [{text:"",pos:[0,0,0]}];
     adjacentList = [new Array()];

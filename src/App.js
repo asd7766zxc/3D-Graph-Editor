@@ -27,11 +27,11 @@ function App() {
     });
     return (
         <div>
+            <Tooltip id='tooltip-common' className='relative z-50' />
             <Playground />
             {[...windowStates]}
             <Sidebar />
             <SelectorWindow />
-            <Tooltip id='tooltip-common' className='relative z-50' />
         </div>
     );
 }

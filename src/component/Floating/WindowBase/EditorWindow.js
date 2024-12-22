@@ -19,7 +19,7 @@ function EditorWindow({defaultFileName,
     const [currentFile,setCurrentFile] = useState(defaultFileName);
     const [currentUpdating,setCurrentUpdating] = useState(defaultHotReload);
     const file = thisFile[currentFile];
-    const [fileManagerDisplay,setFileManagerDisplay]=useState(false);
+    const [fmOpen,setFmOpen]=useState(false);
 
     const editorRef = useRef(null);
     loader.init().then((monaco) => {
@@ -61,8 +61,7 @@ function EditorWindow({defaultFileName,
             setThisWindowState(false);
         }}
         onAdd={()=>{
-            setFileManagerDisplay(!fileManagerDisplay)
-            console.log(fileManagerDisplay);
+            setFmOpen(true);
         }}
         close={!thisWindowState}
         >
@@ -125,6 +124,7 @@ function EditorWindow({defaultFileName,
                 /> 
             </div>
         </FloatWindow>
+        <FileManager open={fmOpen} OnClose={()=>setFmOpen(false)} />
         </> 
     )
 };
