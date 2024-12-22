@@ -201,7 +201,7 @@ function InfoTab(){
                             <br />
                             <SaveButton saved={true} /> means current state saved, <SaveButton /> otherwise.
                             <br />
-                            Note : if you need default data/script back you can manually delete the localStorage with key "tdViewState".
+                            Note : if you need default data/script back you can manually delete the localStorage with key "tdViewState", and immediately refresh the page to get default data/script back.
                         </div>
                         <br />
                         <div className="text-xl ml-4 font-['DM Sans'] font-bold">
