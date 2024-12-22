@@ -12,6 +12,9 @@ import Sidebar from './component/Floating/SidebarPart/Sidebar'
 import SelectorWindow from './component/Floating/WindowBase/SelectorWindow';
 import { Tooltip } from 'react-tooltip';
 import StorageState from './component/Floating/Storage/StorageState';
+import LinkToPdf from './component/Floating/IndividualButtons/LinkToPdf';
+import LinkToGitHub from './component/Floating/IndividualButtons/LinkToGithub';
+import InfoTab from './component/Floating/IndividualButtons/InfoTab';
 
 library.add(faCircleNodes,faCode,faPen,faPaintBrush,faPalette)
 
@@ -34,6 +37,9 @@ function App() {
             <Sidebar />
             <SelectorWindow />
             <StorageState />
+            <LinkToPdf />
+            <LinkToGitHub />
+            <InfoTab />
         </div>
     );
 }

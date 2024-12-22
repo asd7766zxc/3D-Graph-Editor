@@ -66,3 +66,23 @@
  textarea:focus, input:focus{
     outline: none;
 }
+.thinScroll::-webkit-scrollbar {
+width: 5px;
+}
+
+/* Track */
+.thinScroll::-webkit-scrollbar-track {
+background: #555; 
+}
+
+/* Handle */
+.thinScroll::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    border: 50px solid transparent;
+    background: #888; 
+}
+
+/* Handle on hover */
+.thinScroll::-webkit-scrollbar-thumb:hover {
+background: #AFAFAF; 
+}

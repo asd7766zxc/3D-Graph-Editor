@@ -24,6 +24,7 @@
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-resizable-box": "^2.1.0",
+    "react-router-dom": "^6.28.1",
     "react-scripts": "^5.0.1",
     "react-scrollbars-custom": "^4.1.1",
     "react-split": "^2.0.14",

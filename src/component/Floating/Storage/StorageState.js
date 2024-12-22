@@ -37,7 +37,7 @@ function StorageState(){
         })
     );
     useEffect(()=>{
-        if(!(loaddd || fileLoaded)) return;
+        if(!fileLoaded) return;
         const timer = window.setInterval(()=>{
             let curState = {
                 [graphRoot]:{
@@ -47,11 +47,10 @@ function StorageState(){
                     ...internalScriptVariable
                 }
             };
-            console.log(curState);
             localStorage.setItem(rootPath,JSON.stringify(curState));
             SetSaved(true);
         },5000);
-    },[]);
+    },[fileLoaded]);
     useEffect(()=>{
         if(fileLoaded || loaddd) return;
         setFileLoaded(true);

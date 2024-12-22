@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { exampleScriptString } from '../../defaultData/default';
+import { crossiant, exampleScriptString } from '../../defaultData/default';
 const windowState = atom({
     key:'windowState',
     default:[],
@@ -92,11 +92,11 @@ const scriptFiles = atom({
             value: exampleScriptString,
             open:true,
         },
-        'empty.js': {
-            name: 'empty.js',
+        'crossiant.js': {
+            name: 'crossiant.js',
             language: 'javascript',
-            value: '',
-            open:false,
+            value: crossiant,
+            open:true,
         },
     }
 });
