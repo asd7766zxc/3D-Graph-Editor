@@ -1,6 +1,6 @@
 import { VertexState,EdgeState,instanceGraph, createGraph, parseGraph } from '../AbstractGraph'
 import { useRecoilState } from 'recoil';
-import { scriptFiles,scriptPath,scriptWindowState,scriptWindowStyle } from './WindowState';
+import { scriptFiles,scriptFileState,scriptPath,scriptWindowState,scriptWindowStyle } from './WindowState';
 import EditorWindow from './WindowBase/EditorWindow';
 import { useState } from 'react';
 
@@ -44,8 +44,8 @@ function ScriptWindow(){
     const handleValidation = (markers)=>{
         let chk = false;
         markers.forEach((marker)=>{
-            console.log(marker);
             if(marker.severity >= 8){
+                console.log(marker);
                 setContainError(true);
                 chk = true;
                 return;
@@ -59,7 +59,7 @@ function ScriptWindow(){
             onContent={handleValueChange}
             fileState={scriptFiles}
             windowState={scriptWindowState}
-            defaultFileName={'example.js'}
+            currentFileState={scriptFileState}
             defaultHotReload={''}
             filepath={scriptPath}
             handleValidation={handleValidation}

@@ -48,6 +48,11 @@ const sidebarPosState = atom({
 });
 
 const graphPath = "graph/";
+const graphRoot = "graph";
+const graphFileState = atom({
+    key:'graphFileState',
+    default:"default",
+});
 const graphFiles = atom({
     key:'graphFiles',
     default:{
@@ -55,20 +60,29 @@ const graphFiles = atom({
             name: 'default',
             language: '',
             value: '0\n1\n2\n3\n4\n5\n0 2\n0 4\n0 5\n1 4\n1 5\n2 3\n2 4\n4 5',
+            open:true,
         },
-        'style': {
-            name: 'style',
+        'tree': {
+            name: 'tree',
             language: '',
-            value: 'y2',
+            value: '1 0',
+            open:false,
         },
-        'index': {
-            name: 'index',
+        'cycle': {
+            name: 'cycle',
             language: '',
-            value: 'y3',
+            value: '1 0',
+            open:false,
         },
     }
 });
+
 const scriptPath = "script/";
+const scriptRoot = "script";
+const scriptFileState = atom({
+    key:'scriptFileState',
+    default:"example.js",
+});
 const scriptFiles = atom({
     key:'scriptFiles',
     default:{
@@ -76,20 +90,22 @@ const scriptFiles = atom({
             name: 'example.js',
             language: 'javascript',
             value: exampleScriptString,
+            open:true,
         },
-        'style.js': {
-            name: 'style.js',
+        'empty.js': {
+            name: 'empty.js',
             language: 'javascript',
-            value: 'y2',
-        },
-        'index.js': {
-            name: 'index.js',
-            language: 'javascript',
-            value: 'y3',
+            value: '',
+            open:false,
         },
     }
 });
 
+const fileLoadState = atom({
+    key:'fileLoadState',
+    default:false,
+});
+const rootPath = "tdViewState";
 const ButtonToolTip = {
     'data-tooltip-id':"tooltip-common",
     'data-tooltip-delay-show':500,
@@ -108,4 +124,10 @@ export {
     ButtonToolTip,
     graphPath,
     scriptPath,
+    rootPath,
+    graphFileState,
+    scriptFileState,
+    fileLoadState,
+    graphRoot,
+    scriptRoot,
 };

@@ -300,4 +300,5 @@ export {
     GridHelpers,
     instanceGraph,
     physicsState,
+    isEmptyOrSpaces,
 };

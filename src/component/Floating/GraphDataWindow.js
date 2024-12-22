@@ -1,6 +1,6 @@
 import { VertexState,EdgeState,parseGraph, createGraph } from '../AbstractGraph'
 import { useRecoilState } from 'recoil';
-import { graphDataWindowState, graphFiles,graphDataWindowStyle, graphPath } from './WindowState';
+import { graphDataWindowState, graphFiles,graphDataWindowStyle, graphPath, graphFileState } from './WindowState';
 import EditorWindow from './WindowBase/EditorWindow';
 
 function GraphDataWindow(){
@@ -19,7 +19,7 @@ function GraphDataWindow(){
             onContent={handleValueChange}
             fileState={graphFiles}
             windowState={graphDataWindowState}
-            defaultFileName={'default'}
+            currentFileState={graphFileState}
             defaultHotReload={'default'}
             filepath={graphPath}
             {...graphDataWindowStyle}
